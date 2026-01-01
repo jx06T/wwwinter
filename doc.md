@@ -313,6 +313,10 @@ if __name__ == "__main__":
 
 [https://ai.google.dev/competition?hl=zh-tw](https://ai.google.dev/competition?hl=zh-tw)
 這邊有一堆別人做的東西很讚讚
+![ot](img/ot.png)
+
+[https://generative-tarot.vercel.app/](https://generative-tarot.vercel.app/)
+![alt text](img/screenshot-1767259865480.png)
 
 [https://ai.google.dev/gemini-api/docs/models?hl=zh-tw](https://ai.google.dev/gemini-api/docs/models?hl=zh-tw)
 這邊是最新的模型列表
