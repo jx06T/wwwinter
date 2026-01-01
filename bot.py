@@ -1,4 +1,3 @@
-import os
 import google.generativeai as genai
 
 class GeminiBot:
@@ -14,41 +13,31 @@ class GeminiBot:
         # 1. 設定 API Key
         genai.configure(api_key=api_key)
         
-        '''
         # 2. 初始化模型 (使用 2.0-flash 模型，速度快且免費額度高)
         # system_instruction 是 Prompt Injection 攻防的核心區域
         self.model = genai.GenerativeModel(
             model_name="gemini-2.0-flash",
             system_instruction=system_instruction
         )
-        
-        # 3. 開啟對話階段 (history=[] 代表從頭開始)
-        # Gemini SDK 會自動幫我們管理對話的上下文 (Context)
-        self.chat_session = self.model.start_chat(history=[])
-        '''
-        self.model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash",
-            system_instruction=system_instruction
-        )
+
+        self.system_instruction = system_instruction
 
     def send_message(self, user_input):
-        """
-        傳送訊息給 AI 並回傳文字結果
-        """
+        """傳送訊息給 AI 並回傳文字結果"""
         try:
             # 發送訊息至 API
-            # response = self.chat_session.send_message(user_input)
-
             response = self.model.generate_content(user_input)
-            
             # 回傳 AI 的文字內容
             return response.text
+            
         except Exception as e:
             return f"發生錯誤: {str(e)}"
 
-    def get_chat_history(self):
-        """
-        取得目前的對話紀錄 (可用於 Debug 或顯示)
-        """
-        # return self.chat_session.history
-        return None
+    def ping(self):
+        """測試 Gemini API 是否可用"""
+        try:
+            res = self.model.generate_content("ping")
+            return 'pong'
+
+        except Exception as e:
+            return f"發生錯誤: {str(e)}"
