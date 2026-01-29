@@ -17,7 +17,8 @@ class GeminiBot:
         # 2. 初始化模型 (使用 2.0-flash 模型，速度快且免費額度高)
         # system_instruction 是 Prompt Injection 攻防的核心區域
         self.model = genai.GenerativeModel(
-            model_name="gemini-2.0-flash",
+            # model_name="gemini-2.0-flash",
+            model_name="gemini-2.0-flash-lite",
             system_instruction=system_instruction
         )
         

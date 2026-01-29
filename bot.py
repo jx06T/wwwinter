@@ -4,6 +4,7 @@ class GeminiBot:
     """
     Gemini 機器人類別，負責處理模型初始化與對話狀態
     """
+    
     def __init__(self, api_key, system_instruction):
         """
         初始化機器人
