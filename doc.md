@@ -559,6 +559,91 @@ system_instruction = f"""
 2. 控制 AI 可操作的權限，僅將 AI 作為一個搜尋助手，不要給他任何修改或創建東西的機會，也不要讓 AI 知道敏感資訊
 3. 輸出檢查：將 AI 的輸出交給另一個專門的 AI 來檢查是否有不恰當的輸出或操作
 
+## Structured Output
+突然發現這很重要應該要補充
+
+### 什麼是結構化輸出?
+如果我們需要大模型去使用一些工具或是資料庫等等，就會給模型額外的限制或工具，目前最潮的用法是 agent skills，前正子流行的則是 MCP（她沒有被 agent skills 取代，他們是互相協助的技術）先不管他們是啥，但總之他們都離不開背後的基礎都是 Structured Output
+
+當我們需要將 AI 的回應用於後續程式處理時，必須讓 AI 以固定格式(如 JSON、CSV 等)輸出，這就是結構化輸出的核心。
+
+### 簡單情境
+舉例來說我今天如果製作的工具是要讓大模型從一篇文章整理出 3 個關鍵字，並返回這 3 個關鍵字在 google 搜尋的趨勢。提示詞當然可以直接設計成：
+```
+請從以下文章整理出 3 個關鍵字，用「、」分隔，
+不要輸出其他文字。
+```
+處理方式：
+1. 收到模型的回應例如："人工智慧、機器學習、深度學習"
+2. 用程式分割：keywords = response.split("、")
+3. 將關鍵字傳給 Google Trends API 查詢
+
+### 複雜情境
+當需要輸出的資訊較複雜時,使用 JSON 格式更為適合。例如我去年製作的塔羅牌工具需要輸出卡牌名稱、圖片關鍵字、描述等等，此時的提示詞設計（節錄）:
+```md
+### **Output Requirements:**  
+- Return **only JSON format**, without any additional text or explanations.  
+- The JSON should follow this structure:  
+ 
+{
+  "cards": [
+    {
+      "cardChineseName": "<string>",
+      "cardEnglishName": "<string>",
+      "describe": "<string>",
+      "keywords": "<string>"
+    }
+  ]
+}
+
+### **Important Notes:**  
+- Ensure that the JSON output is **valid and properly formatted**.  
+- The `keywords` field should accurately represent the card's main visual element.  
+- No additional explanations or text outside of the JSON response.  
+- **Do not include triple backticks (\`\`\`) in the output.**  
+
+```
+
+處理方式：
+
+1. 收到 AI 的 JSON 字串回應
+```py
+response = '''
+{
+  "cards": [
+    {
+      "cardChineseName": "愚者",
+      "cardEnglishName": "The Fool",
+      "describe": "代表新的開始與冒險",
+      "keywords": "innocent traveler, cliff edge, sunrise"
+    }
+  ]
+}
+'''
+```
+2. 解析 JSON
+```py
+data = json.loads(response)
+```
+
+3. 方便地存取各個欄位
+```py
+card_name = data["cards"][0]["cardChineseName"]  # "愚者"
+keywords = data["cards"][0]["keywords"]  # "innocent traveler, cliff edge, sunrise"
+```
+
+###  結構化輸出的優點
+
+易於程式處理:可直接用程式讀取特定欄位
+減少解析錯誤:避免因格式不一致導致的錯誤
+提高可維護性:格式統一,方便後續修改
+
+### 使用技巧
+
+明確要求格式:在提示詞中清楚說明「只輸出 JSON,不要其他說明」
+提供範例結構:直接給出期望的 JSON 結構樣板
+驗證輸出:收到回應後先驗證格式是否正確再使用
+
 ## 參考
 
 - [20 Prompt Injection Techniques Every Red Teamer Should Test | by Facundo Fernandez | Medium](https://fdzdev.medium.com/20-prompt-injection-techniques-every-red-teamer-should-test-b22359bfd57d)
