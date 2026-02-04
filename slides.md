@@ -135,7 +135,7 @@ API（Application Programming Interface, 應用程式介面）是一個讓程式
 
 ![](https://media.slid.es/uploads/2845530/images/12663377/videoframe_84230.png)
 
-## 中央氣象局 API
+## Gemini 
 
 Gemini 是 Google 開發的大語言模型系列，此系列模型的最新版本是 Gemini 3 pro 能力非常驚人的強。此外它的價格相較同能力的模型便宜很多，通常是個人開發者調用大模型的第一選擇。
 
